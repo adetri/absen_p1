@@ -6,32 +6,229 @@
     <title>Absen</title>
     <!-- Include Bootstrap CSS -->
     {% include 'header/link.html' %}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.3/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.3/dist/sweetalert2.min.css" rel="stylesheet">
+
     <style>
         body {
             height: 100vh;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+ 
+
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .button {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            text-align: center;
+            cursor: pointer;
         }
     </style>
 </head>
 <body class="d-flex align-items-center justify-content-center">
-
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h2>Absensi</h2>
-                <input type="text" readonly name='pan_number' class="form-control mb-3 pan" placeholder="">
-                <input type="text" name ='amal' class="form-control mb-3 aml" placeholder="Text Field 2">
+                <h1 id="name_a" ></h1>
+                <form action="" method="post"></form>
+                {% comment %} <h2>Absensi</h2> {% endcomment %}
+                <input type="text" id="pannum" readonly name='pan_number' class="form-control mb-3 pan" placeholder="">
+                <input type="text" id="display" readonly name ='amal' class="form-control mb-3 aml" value="0" placeholder="Nominal">
+                 {% csrf_token %}
+           
+               <div class="numpad">
+        <button class="button" onclick="appendToInput('1')">1</button>
+        <button class="button" onclick="appendToInput('2')">2</button>
+        <button class="button" onclick="appendToInput('3')">3</button>
+        <button class="button" onclick="appendToInput('4')">4</button>
+        <button class="button" onclick="appendToInput('5')">5</button>
+        <button class="button" onclick="appendToInput('6')">6</button>
+        <button class="button" onclick="appendToInput('7')">7</button>
+        <button class="button" onclick="appendToInput('8')">8</button>
+        <button class="button" onclick="appendToInput('9')">9</button>
+        <button class="button" onclick="clearInput()">C</button>
+        <button class="button" onclick="appendToInput('0')">0</button>
+
+        <button class="button" onclick="deleteLastDigit()">←</button>
+    </div>
+        <button  class="btn btn-secondary" style ="margin-top : 10px;" onclick="send_absen()">Absen</button>
+        <button  class="btn btn-warning" style ="margin-top : 10px;" onclick="reset()">Reset</button>
+
+
+  
             </div>
         </div>
     </div>
 
+    
+
     {% include 'footer/link.html' %}
+
+    <script>
+ 
+    
+function send_absen(){
+ var dataToSend = {
+      "pan" : $('#pannum').val(),
+      "amal" : $('#display').val(),
+
+    };
+ var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+
+    $.ajax({
+                url: '/anggota/absen3',   // Replace with the actual URL of your Django view
+                type: 'POST',
+                  headers: {
+                    'X-CSRFToken': csrfToken
+                },
+                data: dataToSend,
+                dataType: 'json',
+                success: function(response) {
+                   console.log(response);
+
+                   
+                       Swal.fire({
+                            title: "Absen Berhasil!",
+                            icon: "success"
+                            }); 
+                           
+                             setTimeout(function() {
+        // Your code to be executed after the delay
+         location.reload(true); 
+    }, 2000);
+                           
+                           
+                },
+                error: function(error) {
+                                     console.log(error);
+                                     Swal.fire({
+                                        title: "Anggota tidak di temukan",
+                                        icon: "error"
+                                        });
+
+                                        
+                             setTimeout(function() {
+        // Your code to be executed after the delay
+         location.reload(true); 
+    }, 2000);
+
+                }
+            });
+ 
+}
+        
+    </script>
 
     <script>
         $(document).ready(function() {
             // Focus on the first text field when the page loads
             $('.pan').focus();
         });
+
+        function reset(){
+            $('#pannum').val(""); 
+            $('#name_a').text(""); 
+            $('#display').val(0); 
+
+
+
+        }
     </script>
-  
+
+
+<script>
+    $(document).ready(function() {
+        // Event listener for keydown
+        $(document).on('keydown', function(event) {
+            // Check if the pressed key is a number or a backspace
+            if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 8) {
+                // Prevent the default action of the key
+                event.preventDefault();
+
+                // Update the text field with the pressed key
+                updateTextField(event.key);
+                            }
+        });
+    });
+
+    function updateTextField(value) {
+        if($('#pannum').val().length == 10){
+            $('#pannum').val(""); 
+        }
+        
+        // Get the current value of the text field
+        let currentValue = $('#pannum').val();
+
+        // Check if the pressed key is a backspace
+        if (value === 'Backspace') {
+            // Remove the last character
+            $('#pannum').val(currentValue.slice(0, -1));
+        } else {
+            // Append the pressed key to the current value
+            $('#pannum').val(currentValue + value);
+        }
+
+
+          if($('#pannum').val().length == 10){
+         
+            // Your data to send to the server
+            // Send a POST request to the Django view
+            $.ajax({
+                url: '/anggota/absen2/' + $('#pannum').val(),  // Replace with the actual URL of your Django view
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    $('#name_a').text(response['nama']);
+                    $('.aml').val(0);
+                    // Handle the response from the server
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                    // Handle errors
+                    $('#name_a').text("Anggota Tidak di temukan");
+                    $('.aml').val(0);
+                }
+            });
+        }
+        
+    }
+</script>
+
+    <script>
+        function appendToInput(value) {
+            
+            text_val = document.getElementById('display').value += value;
+
+            let firstChar = text_val.charAt(0);
+            if(firstChar ==  "0"){
+             new_text  =   text_val.slice(1);
+            }else{
+                new_text = text_val;
+            }
+            document.getElementById('display').value = new_text;
+            console.log(new_text);
+            
+
+        }
+
+        function clearInput() {
+            document.getElementById('display').value = 0;
+        }
+
+        function deleteLastDigit() {
+            let currentValue = document.getElementById('display').value;
+            document.getElementById('display').value = currentValue.slice(0, -1);
+        }
+    </script>
 </body>
 </html>

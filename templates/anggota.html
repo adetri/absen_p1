@@ -1,0 +1,66 @@
+{% extends "base_sample.html" %}
+
+
+
+{% block title %}
+   Anggota
+{% endblock %}
+
+{%block tittleContent%}
+Anggota
+{%endblock%}
+
+
+
+
+{%block contents%}
+
+
+    <div class="container">
+      
+    <button type="button" class="btn btn-primary mb-2">
+            <a href="/anggota/tambah-anggota" style="color: white; text-decoration: none;">Tambah</a>
+        </button>
+        <table id="example" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Nomer Kartu</th>
+                <th>Aksi</th>
+
+                
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for member in anggota %}
+        <tr>
+            <td>{{member.name}}</td>
+            <td> {{ member.pan_number }}</td>
+            <td><a href="">Edit</a> || <a href="/anggota/delete-anggota/{{member.id}}">Delete</a></td>
+
+            <!-- Add more fields as needed -->
+        </tr>
+
+        
+        {% endfor %}
+
+       
+
+        </tbody>
+
+    </table>
+
+    </div>
+
+{%endblock%}
+
+
+
+
+{% block externalFooter %}
+<script>
+new DataTable('#example');
+</script>
+{% endblock externalFooter %}
+

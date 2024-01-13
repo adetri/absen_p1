@@ -15,6 +15,8 @@
     {% endblock %}
     </title>
     {% include 'header/link.html'%}
+    {% block externalHeader %}
+    {% endblock externalHeader %}
 
 </head>
 
@@ -620,6 +622,9 @@
     <!-- Bootstrap core JavaScript-->
     <!-- <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet"> -->
     {% include 'footer/link.html'%}
+
+    {% block externalFooter %}
+    {% endblock externalFooter %}
 </body>
 
 </html>

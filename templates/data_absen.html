@@ -19,22 +19,30 @@ Anggota
     <div class="container">
       
     <button type="button" class="btn btn-primary mb-2">
-            <a href="/anggota/tambah-anggota" style="color: white; text-decoration: none;">Tambah</a>
+            <a href="/anggota/absen" style="color: white; text-decoration: none;">Absen</a>
         </button>
+          
+    <button type="button" class="btn btn-primary mb-2">
+        <a href="/anggota/absen" style="color: white; text-decoration: none;">Export Data to Excel</a>
+    </button>
         <table id="example" class="display" style="width:100%">
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Nomer Kartu</th>
-                <th>Aksi</th>
+                <th>Sedekah</th>
+                <th>Jam Absen</th>
+                <!-- <th>Hapus</th> -->
+
             </tr>
         </thead>
         <tbody>
-        {% for member in anggota %}
+        {% for ab in absen %}
         <tr>
-            <td>{{member.name}}</td>
-            <td> {{ member.pan_number }}</td>
-            <td> <a href="/anggota/delete-anggota/{{member.id}}">Hapus</a></td>
+            <td>{{ab.member.name}}</td>
+            <td> {{ ab.amal }}</td>
+            <td> {{ ab.jam_absen }}</td>
+
+            <!-- <td> <a href="/anggota/delete-anggota/{{ab.id}}">Hapus</a></td> -->
 
             <!-- Add more fields as needed -->
         </tr>

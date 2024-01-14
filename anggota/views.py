@@ -71,20 +71,23 @@ def tambah_anggota(request):
 
     if request.method == 'POST':
 
-        print(request.POST)
+        try:
 
-        member = Member(name=request.POST['name'],
-                        pan_number=request.POST['pan_number'])
-        member.save()
+            member = Member(name=request.POST['name'],
+                            pan_number=request.POST['pan_number'])
+            member.save()
+            status =1
+        except:
+            status = 2
         context = {
-            "status req": 1,
+            "status_req": status,
         }
         return render(request, 'form_anggota.html', context)
 
     else:
 
         context = {
-            "status req": 0,
+            "status_req": 0,
         }
 
         return render(request, 'form_anggota.html', context)
@@ -99,3 +102,14 @@ def delete_anggota(request, pk):
         pass
 
     return redirect('/anggota/')
+
+
+
+def data_absen(request):
+    absen = Absen.objects.all()
+    context = {
+        'absen': absen
+    }
+    print(absen)
+    return render(request, 'data_absen.html', context)
+

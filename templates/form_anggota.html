@@ -38,7 +38,48 @@ Form Anggota
 
 {% block externalFooter %}
 
+
+
 {% if status_req == 1 %}
+<script>
+ Swal.fire({
+  title: "data berhasil di tambah",
+  icon: "success",
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "oke"
+}).then((result) => {
+  if (result.isConfirmed) {
+    window.location = "/anggota/";
+  }
+});
+  setTimeout(function() {
+    window.location = "/anggota/";
+          // Your code to be executed after the delay
+          //  location.reload(true); 
+      }, 2000);
+  </script>
+  {% elif  status_req == 2%}
+  <script>
+    Swal.fire({
+     title: "data gagal di tambah",
+     icon: "error",
+     confirmButtonColor: "#3085d6",
+     cancelButtonColor: "#d33",
+     confirmButtonText: "oke"
+   }).then((result) => {
+     if (result.isConfirmed) {
+       window.location = "/anggota/tambah-anggota";
+     }
+   });
+     setTimeout(function() {
+       window.location = "/anggota/tambah-anggota";
+             // Your code to be executed after the delay
+             //  location.reload(true); 
+         }, 2000);
+     </script>
+
+
 {% endif %}
 
 
